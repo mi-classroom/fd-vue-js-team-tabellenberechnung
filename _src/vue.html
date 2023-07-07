@@ -48,7 +48,7 @@
             <ul>
               <todo-item
                 v-on:delete="removeTodo"
-                v-bind.todo="item"
+                v-bind:todo="item"
                 v-bind:key="item.id"
                 v-for="item in todos">
               </todo-item>
