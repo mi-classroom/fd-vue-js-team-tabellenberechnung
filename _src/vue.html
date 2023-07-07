@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <title>Vue Intro</title>
+</head>
+<body>
+
+  <div id = "app">
+  </div>
+
+    <script>
+      const { createApp } = Vue;
+      createApp({
+        data() {
+          return {
+            numberOfItems: 3,
+            todos: [
+              { id:0, text: 'Learn JavaScript'},
+              { id:1, text: 'Learn Vue'},
+              { id:2, text: 'Build something awesome!'}
+            ],
+            message: ''
+          }
+        },
+        methods: {
+          addTodo() {
+            this.todos.push({ text: this.message });
+            this.message = '';
+          },
+          removeTodo(id) {
+            this.todos = this.todos.filter(todo => todo.id !== id);
+          },
+          createID () {
+            return this.numberOfItems++;
+          },
+          async fetchData() {
+            const response = await fetch('data.json');
+            const data = await response.json();
+            console.log(data);
+            this.todos = data.todos;
+          }
+        }, 
+        template: 
+        `<h1>Todo Liste</h1>
+            <ul>
+              <todo-item
+                v-on:delete="removeTodo"
+                v-bind.todo="item"
+                v-bind:key="item.id"
+                v-for="item in todos">
+              </todo-item>
+            </ul>
+            <input v-model="message" type="text">
+            <button v-on:click="addTodo">Todo hinzufügen</button>`,
+        mounted() {
+          this.fetchData();
+        }
+      }).component('todo-item',{
+        props: ['todo'],
+        template: `
+          <li>{{ todo.text }}
+            <button v-on:click="$emit('delete', todo.id)">Delete</button>
+          </li>
+          `
+      }).mount('#app')
+    </script>
+</body>
+</html>
